@@ -52,7 +52,7 @@ app.get("/players/", async function (request, response) {
   let playerArray = await db.all(getPlayerQuery);
   response.send(
     playerArray.map(function (eachPlayer) {
-      convertPlayerDbIntoResponseDb(eachPlayer);
+      return convertPlayerDbIntoResponseDb(eachPlayer);
     })
   );
 });
@@ -69,12 +69,7 @@ app.get("/players/:playerId/", async function (request, response) {
                 player_id = ${playerId};
     `;
   let playerIdArray = await db.get(getPlayersByIdQuery);
-  console.log(playerIdArray);
-  response.send(
-    playerIdArray.map(function (eachObject) {
-      convertPlayerDbIntoResponseDb(eachObject);
-    })
-  );
+  response.send(convertPlayerDbIntoResponseDb(playerIdArray));
 });
 
 //Updates the details of a specific player based on the player ID
@@ -106,12 +101,7 @@ app.get("/matches/:matchId/", async function (request, response) {
                 match_id = ${matchId};
     `;
   let matchArray = await db.get(getMatchIdQuery);
-  console.log(matchArray);
-  response.send(
-    matchArray.map(function (eachObject) {
-      convertMatchDetailsDbObjectToResponseObject(eachObject);
-    })
-  );
+  response.send(convertMatchDetailsDbObjectToResponseObject(matchArray));
 });
 
 //Returns a list of all the matches of a player
@@ -128,10 +118,9 @@ app.get("/players/:playerId/matches", async function (request, response) {
                     player_id = ${playerId};
         `;
   let playerMatchArrays = await db.all(getPlayersMatchQuery);
-  console.log(playerMatchArrays);
   response.send(
     playerMatchArrays.map(function (eachMatch) {
-      convertMatchDetailsDbObjectToResponseObject(eachMatch);
+      return convertMatchDetailsDbObjectToResponseObject(eachMatch);
     })
   );
 });
@@ -150,10 +139,9 @@ app.get("/matches/:matchId/players", async function (request, response) {
             match_id = ${matchId};
     `;
   let array = await db.all(getMatchesQuery);
-  console.log(array);
   response.send(
     array.map(function (eachPlayer) {
-      convertPlayerDbIntoResponseDb(eachPlayer);
+      return convertPlayerDbIntoResponseDb(eachPlayer);
     })
   );
 });
@@ -171,7 +159,7 @@ app.get("/players/:playerId/playerScores/", async function (request, response) {
       NATURAL JOIN player_details
     WHERE
       player_id = ${playerId};`;
-  const playersMatchDetails = await database.get(getmatchPlayersQuery);
+  const playersMatchDetails = await db.get(getmatchPlayersQuery);
   response.send(playersMatchDetails);
 });
 module.exports = app;
